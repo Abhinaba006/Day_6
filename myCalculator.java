@@ -1,9 +1,12 @@
 package Day_6;
+
 import java.awt.*;
 import javax.swing.*;
+import javax.xml.transform.stax.StAXResult;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.*;
 import java.awt.event.ActionListener;
 
 public class myCalculator implements ActionListener {
@@ -11,6 +14,7 @@ public class myCalculator implements ActionListener {
     JTextField t, t1;
     JButton b[] = new JButton[10];
     JButton add, sub, mul, div, clr, dec, equ, del;
+    Stack<String> s = new Stack<String>();
 
     static double op1, op2, result;
     static String op = "";
@@ -104,6 +108,27 @@ public class myCalculator implements ActionListener {
         new myCalculator();
     }
 
+    static boolean isDigit(char check) {
+        if (Character.isDigit(check)) {
+            return true;
+        }
+        return false;
+    }
+    public static String calC(String s) {
+        int total = 0;
+    for (String t : s.split("(?=[+-])")) {
+        int term = 1;
+        for (String u : ('*' + t).split("(?=[*/])")) {
+            int n = Integer.parseInt(u.substring(1));
+            term = u.startsWith("*") ? term * n : term / n;
+        }
+        total += term;
+    }
+        System.out.println(total);
+        return String.valueOf(total);
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
@@ -113,39 +138,43 @@ public class myCalculator implements ActionListener {
         }
 
         if(e.getSource() == add){
-            op1 = Double.parseDouble(t.getText());
-            t.setText("");
-            op = "+";
-            flag=0;
-            t1.setText(op1 + op);
+            // op1 = Double.parseDouble(t.getText());
+            // t.setText("");
+            // op = "+";
+            // flag=0;
+            // t1.setText(op1 + op);
+            t.setText(t.getText()+"+");
         }
         else if(e.getSource() == sub){
-            op1 = Double.parseDouble(t.getText());
-            t.setText("");
-            op = "-";
-            flag=0;
-            t1.setText(op1 + op);
-
-
+            // op1 = Double.parseDouble(t.getText());
+            // t.setText("");
+            // op = "-";
+            // flag=0;
+            // t1.setText(op1 + op);
+            t.setText(t.getText()+"-");
         }
         else if(e.getSource() == mul){
-            op1 = Double.parseDouble(t.getText());
-            t.setText("");
-            op="*";
-            flag=0;
-            t1.setText(op1 + op);
+            // op1 = Double.parseDouble(t.getText());
+            // t.setText("");
+            // op="*";
+            // flag=0;
+            // t1.setText(op1 + op);
+            t.setText(t.getText() + "*");
 
         }
         else if(e.getSource() == div){
-            op1 = Double.parseDouble(t.getText());
-            t.setText("");
-            op="/";
-            flag=0;
-            t1.setText(op1 + op);
+            // op1 = Double.parseDouble(t.getText());
+            // t.setText("");
+            // op="/";
+            // flag=0;
+            // t1.setText(op1 + op);
+            t.setText(t.getText()+"/");
 
         }
         else if(e.getSource() == clr){
             t.setText("");
+            // t1.setText("");
+            flag=0;
         }
         else if(e.getSource() == dec){
             if(flag==0) {
@@ -153,24 +182,9 @@ public class myCalculator implements ActionListener {
                 flag=1;
             }
         }else if(e.getSource() == equ){
-            op2 = Double.parseDouble(t.getText());
-            switch (op){
-                case "+":
-                    result = op1 + op2;
-                    break;
-                case "-":
-                    result = op1 - op2;
-                    break;
-                case "*":
-                    result = op1 * op2;
-                    break;
-                case "/":
-                    if(op2 == 0) t.setText("undefined");
-                    result = op1 / op2;
-                    break;
-            }
-            t1.setText(t1.getText() + op2 + "=" + result);;
-            t.setText(String.valueOf(result));
+            String temp = t.getText();
+            System.out.println(temp);
+            t.setText(C);;
         }else if(e.getSource() == del){
             String str = t.getText();
             str = str.substring(0, str.length()-1);
@@ -181,6 +195,3 @@ public class myCalculator implements ActionListener {
         }
     }
 }
-    
-
-        
