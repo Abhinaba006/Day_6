@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 
 public class myCalculator implements ActionListener {
     JFrame f;
-    JTextField t, t1;
+    JTextField t;
     JButton b[] = new JButton[10];
     JButton add, sub, mul, div, clr, dec, equ, del;
     Stack<String> s = new Stack<String>();
@@ -29,12 +29,10 @@ public class myCalculator implements ActionListener {
 
         Font fo = new Font("Arial", Font.BOLD, 20);
         t = new JTextField();
-        t1 = new JTextField();
         t.setFont(fo);
         t.setBackground(Color.gray);
         t.setForeground(Color.WHITE);
         t.setBounds(35, 40, 210, 50);
-        t1.setBounds(35, 10, 210, 20);
 
         // buttons
         for (int i = 0; i < 10; i++) {
@@ -61,7 +59,6 @@ public class myCalculator implements ActionListener {
         del.addActionListener(this);
 
         f.add(t);
-        f.add(t1);
 
         // add button to frame
         b[7].setBounds(40, 100, 50, 40);
@@ -100,6 +97,7 @@ public class myCalculator implements ActionListener {
 
         f.add(del);
 
+        f.repaint();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
@@ -114,84 +112,77 @@ public class myCalculator implements ActionListener {
         }
         return false;
     }
-    public static String calC(String s) {
-        int total = 0;
-    for (String t : s.split("(?=[+-])")) {
-        int term = 1;
-        for (String u : ('*' + t).split("(?=[*/])")) {
-            int n = Integer.parseInt(u.substring(1));
-            term = u.startsWith("*") ? term * n : term / n;
+    public static Boolean isOperator(char check) {
+        if (check == '+' || check == '-' || check == '*' || check == '/') {
+            return true;
         }
-        total += term;
+        return false;
     }
-        System.out.println(total);
-        return String.valueOf(total);
-
+    public static String calC(String s) {
+        Stack<Double> nums = new Stack<Double>();
+            char lastOperator = '+';
+            String num = "";
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                if (c >= '0' && c <= '9' || c == '.') {
+                    num += c;
+                }
+                if (isOperator(c) || i == s.length() - 1) {
+                    if (lastOperator == '+') {
+                        nums.push(Double.parseDouble(num));
+                    }
+                    else if (lastOperator == '-') {
+                        nums.push((double) -1 * Double.parseDouble(num));
+                    }
+                    else if (lastOperator == '*') {
+                        nums.push(nums.pop()*Double.parseDouble(num));
+                    } else if (lastOperator == '/') {
+                        nums.push(nums.pop() / Double.parseDouble(num));
+                    }
+                    num = "";
+                    lastOperator = c;
+                }
+            }
+            Double res= 0.0;
+            while (!nums.isEmpty()) {
+                res = res + nums.pop();
+            }
+            return res.toString();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        for(int i=0; i<10; i++){
-            if(e.getSource() == b[i])
+        for (int i = 0; i < 10; i++) {
+            if (e.getSource() == b[i])
                 t.setText(t.getText() + i);
         }
-
-        if(e.getSource() == add){
-            // op1 = Double.parseDouble(t.getText());
-            // t.setText("");
-            // op = "+";
-            // flag=0;
-            // t1.setText(op1 + op);
-            t.setText(t.getText()+"+");
-        }
-        else if(e.getSource() == sub){
-            // op1 = Double.parseDouble(t.getText());
-            // t.setText("");
-            // op = "-";
-            // flag=0;
-            // t1.setText(op1 + op);
-            t.setText(t.getText()+"-");
-        }
-        else if(e.getSource() == mul){
-            // op1 = Double.parseDouble(t.getText());
-            // t.setText("");
-            // op="*";
-            // flag=0;
-            // t1.setText(op1 + op);
+        if (e.getSource() == add) {
+            t.setText(t.getText() + "+");
+        } else if (e.getSource() == sub) {
+            t.setText(t.getText() + "-");
+        } else if (e.getSource() == mul) {
             t.setText(t.getText() + "*");
 
-        }
-        else if(e.getSource() == div){
-            // op1 = Double.parseDouble(t.getText());
-            // t.setText("");
-            // op="/";
-            // flag=0;
-            // t1.setText(op1 + op);
-            t.setText(t.getText()+"/");
+        } else if (e.getSource() == div) {
+            t.setText(t.getText() + "/");
 
-        }
-        else if(e.getSource() == clr){
+        } else if (e.getSource() == clr) {
             t.setText("");
-            // t1.setText("");
-            flag=0;
-        }
-        else if(e.getSource() == dec){
-            if(flag==0) {
+            flag = 0;
+        } else if (e.getSource() == dec) {
+            if (flag == 0) {
                 t.setText(t.getText() + ".");
-                flag=1;
+                flag = 1;
             }
-        }else if(e.getSource() == equ){
+        } else if (e.getSource() == equ) {
             String temp = t.getText();
-            System.out.println(temp);
-            t.setText(C);;
-        }else if(e.getSource() == del){
+            t.setText(t.getText()+" = "+calC(temp));
+        } else if (e.getSource() == del) {
             String str = t.getText();
-            str = str.substring(0, str.length()-1);
+            str = str.substring(0, str.length() - 1);
             t.setText(str);
-        }else if(e.getSource() == clr){
+        } else if (e.getSource() == clr) {
             t.setText("");
-            t1.setText("");
         }
     }
 }
